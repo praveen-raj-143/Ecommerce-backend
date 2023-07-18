@@ -1,6 +1,6 @@
 const {Product} = require("../Models/products")
 const {User} =require("../Models/user")
-const {Cart} = require("../Models/cart")
+const Cart = require("../Models/cart")
 const bcrypt =require("bcrypt")
 const jwt = require("jsonwebtoken")
 const JWT_SECRET = "mysecretkey"
@@ -15,7 +15,6 @@ const allproduct = async (req,res)=>{
 const signup = async (req,res)=>{
     const {username,email,password} = req.body;
     
-    
     try{
         const olduser = await User.findOne({email});
         if(olduser){
@@ -25,8 +24,7 @@ const signup = async (req,res)=>{
         const hashpassword = await bcrypt.hash(password,salt)
         
         const userobj = new User({
-            username,
-            
+            username,            
             email,
             password: hashpassword
         })
@@ -59,61 +57,112 @@ const login = async (req,res)=>{
    }
    
 }
+const userdetails= async (req,res)=>{
+    const {token}=req.body;
+    try {
+        const user = jwt.verify(token, JWT_SECRET, (err,res)=>{
+            if(err){
+                return "token expired";
+            }
+            return res;
+        });
+        if(user=="token expires"){
+            return res.json({status: "error", data:"token expired"})
+        }
+        const useremail = user.email;
+        User.findOne({email: useremail})
+        .then((data)=>{
+            res.send({status: "ok", data: data});
+        })
+        .catch((error)=>{
+            res.send(error);
+        })
+    } catch (error) {
+        
+    }
+}
+// exports.AddToCart = async(req,res)=>{
+
+//     console.log("Add Items req.body.Data",req.body.Data);
+//     const {userID,productID,quantity} = req.body.Data;
+    
+//     try {
+
+//         const user = await UsersModel.findById(userID);
+//         console.log("user =>",user);
+//         let cart = await CartModel.findOne({userId:user._id});
+//         let product = await Product.findById(productID)
+//         console.log("cart =>",cart);
+//         if(cart){
+//             let itemIndex = cart.products.findIndex((ele)=>{
+//                 if(ele){
+//                    return ele._id == productID
+//                 }else
+//                     return false
+
+//             });
+//             console.log("itemIndex==>",itemIndex);
+//             if(itemIndex > -1){
+//                 let productQuantity = cart.products[itemIndex];   // will return object product[{},{},{}]
+//                 productQuantity.quantity = quantity;
+//                 cart.products[itemIndex] = productQuantity;       // assigned updated Product obj
+//             }else{
+//                 cart.products.push(product);
+//             }
+//             cart = await cart.save();
+//             res.status(200).json({
+//                 status:"success",
+//                 cart:cart
+//             });
+//         }else{
+//             console.log("user._id==>",user._id);
+//             console.log("{productID,quantity,price}==>",{productID,quantity});
+//             // const nCart = await CartModel.create({
+//             //     userId:user._id,
+//             //     products:[{productID,quantity,price}]
+//             // });
+//             const nCart = await new CartModel({
+//                 userId:user._id,
+//                 products:[{...product,quantity:quantity}]
+//             })
+
+//             const response =await nCart.save();
+//             return res.status(201).json({response});
+//         }
+//     } catch (error) {
+//         console.log("error in add Items",error);
+//         res.status(400).json({
+//             status:"Fail",
+//             error:error
+//         });
+//     }
+
+// }
 
 const addtocart = async (req,res)=>{
-    console.log("Add Items req.BOdy.Data",req.body.Data);
-    const {userID,productID,quantity} = req.body.Data;
-    
-    try {
+    const { id,name,catagory,ratting,image,price,oprice } = req.body;
 
-        const user = await UsersModel.findById(userID);
-        console.log("user =>",user);
-        let cart = await CartModel.findOne({userId:user._id});
-        let product = await Product.findById(productID)
-        console.log("cart =>",cart);
-        if(cart){
-            let itemIndex = cart.products.findIndex((ele)=>{
-                if(ele){
-                   return ele._id == productID
-                }else
-                    return false
-
-            });
-            console.log("itemIndex==>",itemIndex);
-            if(itemIndex > -1){
-                let productQuantity = cart.products[itemIndex];   // will return object product[{},{},{}]
-                productQuantity.quantity = quantity;
-                cart.products[itemIndex] = productQuantity;       // assigned updated Product obj
-            }else{
-                cart.products.push(product);
-            }
-            cart = await cart.save();
-            res.status(200).json({
-                status:"success",
-                cart:cart
-            });
-        }else{
-            console.log("user._id==>",user._id);
-            console.log("{productID,quantity,price}==>",{productID,quantity});
-            // const nCart = await CartModel.create({
-            //     userId:user._id,
-            //     products:[{productID,quantity,price}]
-            // });
-            const nCart = await new CartModel({
-                userId:user._id,
-                products:[{...product,quantity:quantity}]
-            })
-
-            const response =await nCart.save();
-            return res.status(201).json({response});
+  try {
+    const isexist = await User.findOne({id});
+        if(isexist){
+          return  res.json({msg:"product already exist"})
         }
-    } catch (error) {
-        console.log("error in add Items",error);
-        res.status(400).json({
-            status:"Fail",
-            error:error
-        });
-    }
+    const cartobj = new Cart({
+        id,
+        name,
+        catagory,
+        ratting,
+        image,
+        price,
+        oprice
+    });
+    console.log(cartobj)
+    const cartdata= await cartobj.save();
+    res.json({status:"ok", data:cartdata})
+  } catch (error) {
+    console.error('Error adding item to cart:', error);
+    res.status(500).json({ error: 'Failed to add item to cart' });
+  }
 }
 
 const showcart= async (req,res)=>{
@@ -143,4 +192,4 @@ const showcart= async (req,res)=>{
     }
 }
 
-module.exports = {allproduct,signup,login,addtocart,showcart}
+module.exports = {allproduct,signup,login,userdetails,addtocart,showcart}
