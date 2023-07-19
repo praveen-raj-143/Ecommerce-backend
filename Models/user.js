@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -13,7 +14,11 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true,
-    }
+    },
+    cart:[{
+        type: ObjectId,
+        ref: "Product"
+    }]
 }) 
 
 const User = mongoose.model("User",userSchema);

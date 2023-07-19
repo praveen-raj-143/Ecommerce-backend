@@ -51,7 +51,7 @@ const login = async (req,res)=>{
            expiresIn:'1d',
        })
        
-       return res.json({status:"ok", data:token})
+       return res.json({status:"ok", data:token, userId:user._id})
    }else{
        return res.json({status:"error"})
    }
@@ -81,115 +81,17 @@ const userdetails= async (req,res)=>{
         
     }
 }
-// exports.AddToCart = async(req,res)=>{
 
-//     console.log("Add Items req.body.Data",req.body.Data);
-//     const {userID,productID,quantity} = req.body.Data;
-    
-//     try {
-
-//         const user = await UsersModel.findById(userID);
-//         console.log("user =>",user);
-//         let cart = await CartModel.findOne({userId:user._id});
-//         let product = await Product.findById(productID)
-//         console.log("cart =>",cart);
-//         if(cart){
-//             let itemIndex = cart.products.findIndex((ele)=>{
-//                 if(ele){
-//                    return ele._id == productID
-//                 }else
-//                     return false
-
-//             });
-//             console.log("itemIndex==>",itemIndex);
-//             if(itemIndex > -1){
-//                 let productQuantity = cart.products[itemIndex];   // will return object product[{},{},{}]
-//                 productQuantity.quantity = quantity;
-//                 cart.products[itemIndex] = productQuantity;       // assigned updated Product obj
-//             }else{
-//                 cart.products.push(product);
-//             }
-//             cart = await cart.save();
-//             res.status(200).json({
-//                 status:"success",
-//                 cart:cart
-//             });
-//         }else{
-//             console.log("user._id==>",user._id);
-//             console.log("{productID,quantity,price}==>",{productID,quantity});
-//             // const nCart = await CartModel.create({
-//             //     userId:user._id,
-//             //     products:[{productID,quantity,price}]
-//             // });
-//             const nCart = await new CartModel({
-//                 userId:user._id,
-//                 products:[{...product,quantity:quantity}]
-//             })
-
-//             const response =await nCart.save();
-//             return res.status(201).json({response});
-//         }
-//     } catch (error) {
-//         console.log("error in add Items",error);
-//         res.status(400).json({
-//             status:"Fail",
-//             error:error
-//         });
-//     }
-
-// }
 
 const addtocart = async (req,res)=>{
-    const { id,name,catagory,ratting,image,price,oprice } = req.body;
-
-  try {
-    const isexist = await User.findOne({id});
-        if(isexist){
-          return  res.json({msg:"product already exist"})
-        }
-    const cartobj = new Cart({
-        id,
-        name,
-        catagory,
-        ratting,
-        image,
-        price,
-        oprice
-    });
-    console.log(cartobj)
-    const cartdata= await cartobj.save();
-    res.json({status:"ok", data:cartdata})
-  } catch (error) {
-    console.error('Error adding item to cart:', error);
-    res.status(500).json({ error: 'Failed to add item to cart' });
-  }
-}
-
-const showcart= async (req,res)=>{
-    const cartItems = [];
-    const {userID} = req.body.Data;
-    console.log("Show carts req.body.Data =>",req.body.Data);
-    try {
-        const user = await UsersModel.findById(userID);
-        console.log("Show cart user =>",user);
-        let cart = await CartModel.findOne({userId:user._id});
-        console.log("show cart's cart =>",cart);
-        cart.products.map((product)=>{
-            if(product!==null)
-                cartItems.push(product);
-        });
-        
-        res.status(200).json({
-            cartItems
-        });
-
-    } catch (error) {
-        console.log(error);
-        res.status(400).json({
-            status:"Fail",
-            error:error
-        });
+    const update= await User.updateOne({_id : req.body.userId},{$addToSet:{cart:req.body.productId}})
+    if(update){
+        return res.json({status:"ok"})
+    }else{
+        return res.json({status:"error"})
     }
 }
 
-module.exports = {allproduct,signup,login,userdetails,addtocart,showcart}
+
+
+module.exports = {allproduct,signup,login,userdetails,addtocart}
