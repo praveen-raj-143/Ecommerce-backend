@@ -85,14 +85,14 @@ const userdetails= async (req,res)=>{
 
 
 const addtocart = async (req,res)=>{
-    console.log(req.body, "78")
-    // const update= await User.updateOne({_id : req.body.userId},{$addToSet:{cart:req.body.productId}})
-    // if(update){
-    //     return res.json({status:"ok"})
-    // }else{
-    //     return res.json({status:"error"})
-    // }
-    return res.send("add")
+    // console.log(req.body, "78")
+    const update= await User.updateOne({_id : req.body.userId},{$addToSet:{cart:req.body.productId}})
+    if(update){
+        return res.json({status:"ok"})
+    }else{
+        return res.json({status:"error"})
+    }
+    // return res.send("add")
 }
 
 
