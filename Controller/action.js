@@ -70,7 +70,7 @@ const userdetails= async (req,res)=>{
             return res.json({status: "error", data:"token expired"})
         }
         const useremail = user.email;
-        User.findOne({email: useremail})
+        User.findOne({email: useremail}).populate("cart")
         .then((data)=>{
             res.send({status: "ok", data: data});
         })
