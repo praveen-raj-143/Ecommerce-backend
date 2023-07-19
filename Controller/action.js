@@ -1,6 +1,6 @@
 const {Product} = require("../Models/products")
 const {User} =require("../Models/user")
-const Cart = require("../Models/cart")
+// const Cart = require("../Models/cart")
 const bcrypt =require("bcrypt")
 const jwt = require("jsonwebtoken")
 const JWT_SECRET = "mysecretkey"
@@ -9,6 +9,7 @@ const JWT_SECRET = "mysecretkey"
 const allproduct = async (req,res)=>{
    const result= await Product.find()
    res.send(result)
+   res.end()
 }
 
 
@@ -84,12 +85,14 @@ const userdetails= async (req,res)=>{
 
 
 const addtocart = async (req,res)=>{
-    const update= await User.updateOne({_id : req.body.userId},{$addToSet:{cart:req.body.productId}})
-    if(update){
-        return res.json({status:"ok"})
-    }else{
-        return res.json({status:"error"})
-    }
+    console.log(req.body, "78")
+    // const update= await User.updateOne({_id : req.body.userId},{$addToSet:{cart:req.body.productId}})
+    // if(update){
+    //     return res.json({status:"ok"})
+    // }else{
+    //     return res.json({status:"error"})
+    // }
+    return res.send("add")
 }
 
 
