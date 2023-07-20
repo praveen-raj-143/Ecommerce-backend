@@ -95,6 +95,17 @@ const addtocart = async (req,res)=>{
     // return res.send("add")
 }
 
+const deleteproduct = async (req, res)=>{
+    console.log(req.body)
+    // const item=req.body 
+    const deleteprdt = await User.updateOne({_id : req.body.userId},{$pull:{cart:req.body.productId}})
+    // return res.send("delete from backend")
+    if(deleteprdt){
+        return res.json({status:"ok"})
+    }else{
+        return res.json({status:"error"})
+    }
+}
 
 
-module.exports = {allproduct,signup,login,userdetails,addtocart}
+module.exports = {allproduct,signup,login,userdetails,addtocart,deleteproduct}
