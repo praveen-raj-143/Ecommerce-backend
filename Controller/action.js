@@ -97,7 +97,8 @@ const addtocart = async (req,res)=>{
 
 const updatecart =async (req,res)=>{
     console.log(req.body)
-res.send("update")
+    // const updatecrt=await User.updateOne({_id : req.body.userId},{$inc:{quantity:req.body.productId}},{new: true})
+return res.send("update")
 }
 
 const deleteproduct = async (req, res)=>{
