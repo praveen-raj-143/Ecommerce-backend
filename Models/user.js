@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema({
     },
     cart:[{
         type: ObjectId,
+        quantity:Number,
         ref: "Product"
     }]
 }) 

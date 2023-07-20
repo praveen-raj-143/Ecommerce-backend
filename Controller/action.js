@@ -95,8 +95,13 @@ const addtocart = async (req,res)=>{
     // return res.send("add")
 }
 
-const deleteproduct = async (req, res)=>{
+const updatecart =async (req,res)=>{
     console.log(req.body)
+res.send("update")
+}
+
+const deleteproduct = async (req, res)=>{
+    // console.log(req.body)
     // const item=req.body 
     const deleteprdt = await User.updateOne({_id : req.body.userId},{$pull:{cart:req.body.productId}})
     // return res.send("delete from backend")
@@ -108,4 +113,4 @@ const deleteproduct = async (req, res)=>{
 }
 
 
-module.exports = {allproduct,signup,login,userdetails,addtocart,deleteproduct}
+module.exports = {allproduct,signup,login,userdetails,addtocart,deleteproduct,updatecart}
