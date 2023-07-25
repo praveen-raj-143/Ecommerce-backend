@@ -29,9 +29,8 @@ const productSchema = new mongoose.Schema({
     oprice:{
         type:Number,
         required:true,
-    },
-    quantity:Number,
-        default:1,
+    }
+   
 }) 
 
 const Product = mongoose.model("Product",productSchema);
