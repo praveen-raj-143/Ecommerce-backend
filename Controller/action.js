@@ -95,11 +95,11 @@ const addtocart = async (req,res)=>{
     // return res.send("add")
 }
 
-const updatecart =async (req,res)=>{
-    console.log(req.body)
-    // const updatecrt=await User.updateOne({_id : req.body.userId},{$inc:{quantity:req.body.productId}},{new: true})
-return res.send("update")
-}
+// const updatecart =async (req,res)=>{
+//     console.log(req.body)
+//     // const updatecrt=await User.updateOne({_id : req.body.userId},{$inc:{quantity:req.body.productId}},{new: true})
+// return res.send("update")
+// }
 
 const deleteproduct = async (req, res)=>{
     // console.log(req.body)
@@ -112,6 +112,27 @@ const deleteproduct = async (req, res)=>{
         return res.json({status:"error"})
     }
 }
+const deleteall = async (req, res)=>{
+    // console.log(req.body)
+    // const item=req.body 
+    const deleteallprdt = await User.updateOne({_id : req.body.userId},{ $pull: { cart: { product: { $in: req.body.productIds } } } })
+    // return res.send("delete from backend")
+    if(deleteallprdt){
+        return res.json({status:"ok"})
+    }else{
+        return res.json({status:"error"})
+    }
+}
+
+// const order=async (req,res)=>{
+//     const {productId,quantity}=req.body
+//     const orderobj= new Cart({
+//         productId,
+//         quantity
+//     })
+//    let orderone= await Cart.insertMany(productId,quantity)
+//     return res.send(orderone)
+// }
 
 
-module.exports = {allproduct,signup,login,userdetails,addtocart,deleteproduct,updatecart}
+module.exports = {allproduct,signup,login,userdetails,addtocart,deleteproduct,deleteall}
