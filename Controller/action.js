@@ -119,7 +119,7 @@ const deleteall = async (req, res)=>{
     
     user.cart=[]
     await user.save();
-    console.log(user)
+    // console.log(user)
     
     return res.json({status:"ok"})
    
