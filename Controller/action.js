@@ -1,6 +1,6 @@
 const {Product} = require("../Models/products")
 const {User} =require("../Models/user")
-// const Cart = require("../Models/cart")
+// const {Order} = require("../Models/cart")
 const bcrypt =require("bcrypt")
 const jwt = require("jsonwebtoken")
 const JWT_SECRET = "mysecretkey"
@@ -114,25 +114,18 @@ const deleteproduct = async (req, res)=>{
 }
 const deleteall = async (req, res)=>{
     // console.log(req.body)
-    // const item=req.body 
-    const deleteallprdt = await User.updateOne({_id : req.body.userId},{ $pull: { cart: { product: { $in: req.body.productIds } } } })
-    // return res.send("delete from backend")
-    if(deleteallprdt){
-        return res.json({status:"ok"})
-    }else{
-        return res.json({status:"error"})
-    }
+    
+    const user = await User.findOne({_id:req.body.userId})
+    
+    user.cart=[]
+    await user.save();
+    console.log(user)
+    
+    return res.json({status:"ok"})
+   
 }
 
-// const order=async (req,res)=>{
-//     const {productId,quantity}=req.body
-//     const orderobj= new Cart({
-//         productId,
-//         quantity
-//     })
-//    let orderone= await Cart.insertMany(productId,quantity)
-//     return res.send(orderone)
-// }
+
 
 
 module.exports = {allproduct,signup,login,userdetails,addtocart,deleteproduct,deleteall}
